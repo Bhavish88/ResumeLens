@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.pyc
+
+# Environment
+.env
+venv/
+env/
+
+# Database
+db.sqlite3
+
+# VS Code
+.vscode/
+
+# Migrations cache
+*.log
+
+# Static files
+staticfiles/
+
+# OS files
+.DS_Store
