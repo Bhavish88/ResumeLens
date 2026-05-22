@@ -4,8 +4,7 @@
  * THE CENTRAL HTTP CLIENT for the entire frontend.
  *
  * What this does:
- * 1. Creates an axios instance pre-configured with baseURL = ''
- *    (Vite's proxy forwards /api/* → http://localhost:8000)
+ * 1. Creates an axios instance pre-configured with baseURL = 'https://resumelens-8u2t.onrender.com'
  * 2. REQUEST interceptor: automatically attaches the JWT access token
  *    to every request in the Authorization header — so no page/component
  *    has to manually add it.
@@ -23,7 +22,7 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-  baseURL: '',
+  baseURL: 'https://resumelens-8u2t.onrender.com',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -92,7 +91,7 @@ axiosInstance.interceptors.response.use(
 
       try {
         // Try to get a new access token
-        const response = await axios.post('/api/auth/token/refresh/', {
+        const response = await axios.post('https://resumelens-8u2t.onrender.com/api/auth/token/refresh/', {
           refresh: refreshToken,
         });
 
