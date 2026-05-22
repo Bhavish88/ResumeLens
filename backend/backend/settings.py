@@ -19,7 +19,8 @@ load_dotenv(BASE_DIR / '.env', override=True)
 
 # SECURITY
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-change-this-in-production-please')
-DEBUG = os.getenv('DEBUG', 'True') == 'True'
+# Default to DEBUG=False in production unless explicitly overridden to True
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
@@ -157,17 +158,27 @@ SIMPLE_JWT = {
     'USER_ID_CLAIM': 'user_id',
 }
 
-# ─── CORS SETTINGS ───────────────────────────────────────────────────────────
-CORS_ALLOWED_ORIGINS = os.getenv(
-    'CORS_ALLOWED_ORIGINS',
-    'http://localhost:3000,http://localhost:3001,http://localhost:5173,https://resume-lens-flax.vercel.app'
-).split(',')
+# ─── CORS & CSRF SETTINGS ───────────────────────────────────────────────────
+# Parse allowed origins and strip any trailing slashes to prevent Django CORS errors
+CORS_ALLOWED_ORIGINS = [
+    origin.rstrip('/') for origin in os.getenv(
+        'CORS_ALLOWED_ORIGINS',
+        'http://localhost:3000,http://localhost:3001,http://localhost:5173,https://resume-lens-flax.vercel.app'
+    ).split(',')
+]
 
 CORS_ALLOWED_ORIGIN_REGEXES = [
     r"^https://.*\.vercel\.app$",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
+
+# CSRF settings: trusted origins must include the scheme (http:// or https://)
+# Vercel wildcard is allowed in CSRF_TRUSTED_ORIGINS as https://*.vercel.app
+CSRF_TRUSTED_ORIGINS = [
+    origin for origin in CORS_ALLOWED_ORIGINS if origin.startswith(('http://', 'https://'))
+]
+CSRF_TRUSTED_ORIGINS.append('https://*.vercel.app')
 
 # ─── GEMINI AI ────────────────────────────────────────────────────────────────
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY', '')
