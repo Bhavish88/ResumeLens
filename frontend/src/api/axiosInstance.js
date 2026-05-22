@@ -21,8 +21,10 @@
 
 import axios from 'axios';
 
+const BACKEND_URL = import.meta.env.VITE_API_URL || 'https://resumelens-8u2t.onrender.com';
+
 const axiosInstance = axios.create({
-  baseURL: 'https://resumelens-8u2t.onrender.com',
+  baseURL: BACKEND_URL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -91,7 +93,7 @@ axiosInstance.interceptors.response.use(
 
       try {
         // Try to get a new access token
-        const response = await axios.post('https://resumelens-8u2t.onrender.com/api/auth/token/refresh/', {
+        const response = await axios.post(`${BACKEND_URL}/api/auth/token/refresh/`, {
           refresh: refreshToken,
         });
 
