@@ -1,38 +1,61 @@
 # ResumeLens — AI Powered Resume Analyzer
 
-ResumeLens is a full-stack AI-powered web application that analyzes resumes using ATS (Applicant Tracking System) evaluation techniques and provides intelligent suggestions to improve resume quality and hiring chances.
+ResumeLens is a modern full-stack AI-powered resume analysis platform that evaluates resumes using ATS (Applicant Tracking System) techniques and provides intelligent, role-specific feedback to improve resume quality and hiring potential.
 
-The platform extracts text from uploaded PDF resumes, evaluates resumes based on skills and job relevance, detects missing keywords, and generates AI-powered personalized feedback using Gemini AI.
+The platform analyzes uploaded PDF resumes, calculates ATS compatibility scores, detects missing skills and keywords, and generates AI-powered personalized improvement suggestions using Gemini AI.
 
 ---
 
 # Features
 
-## Authentication
-- User Signup
-- User Login
+## Authentication & Security
+- User Signup & Login
 - JWT Authentication
-- Secure User Management
+- Protected API Routes
+- Secure Environment Variable Handling
+- File Validation & Upload Security
 
-## Resume Analysis
-- PDF Resume Upload
-- Resume Text Extraction
-- ATS-Based Resume Evaluation
-- Resume Score Generation
-- Skill Gap Detection
-- Missing Keyword Detection
-- AI-Based Resume Suggestions
+---
 
-## AI Integration
-- Gemini AI Powered Analysis
+# Resume Analysis Features
+
+## ATS Resume Evaluation
+- ATS Compatibility Scoring
+- Resume Structure Analysis
+- Resume Completeness Evaluation
+- Role-Based Resume Scoring
+- Visual ATS Score Breakdown
+
+## AI-Powered Analysis
+- Gemini AI Integration
 - Personalized Resume Feedback
-- Role-Specific Resume Evaluation
+- Intelligent Improvement Suggestions
+- Context-Aware Resume Recommendations
+- Professional Resume Summary Generation
 
-## Security
-- Environment Variable Protection
-- Secure API Endpoints
-- File Validation
-- JWT Token Authentication
+## Missing Skills Detection
+- Role-Specific Skill Gap Analysis
+- Missing Keyword Detection
+- Industry-Relevant Recommendations
+
+---
+
+# Dashboard & History
+
+- Resume Analysis Dashboard
+- ATS Score Analytics
+- Resume Upload History
+- Best Score Tracking
+- Average ATS Score Tracking
+- Recent Analysis Overview
+
+---
+
+# Export & Reporting
+
+- Downloadable PDF Analysis Report
+- Printable Resume Evaluation
+- Structured Analysis Export
 
 ---
 
@@ -42,6 +65,7 @@ The platform extracts text from uploaded PDF resumes, evaluates resumes based on
 - React.js
 - Tailwind CSS
 - JavaScript
+- Vite
 
 ## Backend
 - Django
@@ -66,9 +90,13 @@ ResumeLens/
 │   ├── users/
 │   ├── manage.py
 │   ├── requirements.txt
-│   ├── .env.example
-│   └── README.md
+│   └── .env.example
 │
-├── frontend/          # Planned frontend application
+├── frontend/
+│   ├── public/
+│   ├── src/
+│   ├── package.json
+│   ├── vite.config.js
+│   └── .env.example
 │
-└── screenshots/       # Project screenshots
+└── README.md
