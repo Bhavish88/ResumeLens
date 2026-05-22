@@ -30,3 +30,10 @@ yarn-error.log*
 # Media uploads
 backend/media/
 media/
+
+node_modules/
+dist/
+venv/
+.env
+__pycache__/
+staticfiles/
