@@ -160,8 +160,13 @@ SIMPLE_JWT = {
 # ─── CORS SETTINGS ───────────────────────────────────────────────────────────
 CORS_ALLOWED_ORIGINS = os.getenv(
     'CORS_ALLOWED_ORIGINS',
-    'http://localhost:3000,http://localhost:5173'
+    'http://localhost:3000,http://localhost:3001,http://localhost:5173,https://resume-lens-flax.vercel.app'
 ).split(',')
+
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^https://.*\.vercel\.app$",
+]
+
 CORS_ALLOW_CREDENTIALS = True
 
 # ─── GEMINI AI ────────────────────────────────────────────────────────────────
