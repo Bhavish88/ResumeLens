@@ -83,10 +83,14 @@ function UploadPage() {
       setTimeout(() => navigate(`/result/${resumeId}`), 800);
     } catch (err) {
       setStep(0);
-      const msg =
-        err.response?.data?.message ||
-        err.response?.data?.error ||
-        'Something went wrong. Please try again.';
+      let msg = 'Something went wrong. Please try again.';
+      if (err.response?.data) {
+        if (err.response.data.error) {
+          msg = err.response.data.error;
+        } else if (err.response.data.message) {
+          msg = err.response.data.message;
+        }
+      }
       setError(msg);
     }
   };
@@ -101,7 +105,7 @@ function UploadPage() {
         {/* Header */}
         <div className="dashboard-header">
           <h1 className="page-title">Upload Resume</h1>
-          <p className="page-subtitle">Get your resume AI-analyzed in under 30 seconds.</p>
+          <p className="page-subtitle">Get detailed feedback on your resume matching and structure.</p>
         </div>
 
         {/* Progress Steps */}
@@ -123,7 +127,7 @@ function UploadPage() {
 
         {/* Error */}
         {error && (
-          <div className="auth-alert auth-alert-error" style={{ marginBottom: 24 }}>{error}</div>
+          <div className="auth-alert auth-alert-error" style={{ marginBottom: 24, whiteSpace: 'pre-line' }}>{error}</div>
         )}
 
         {/* Loading states */}
@@ -138,7 +142,7 @@ function UploadPage() {
         {step === 2 && (
           <div className="loading-state">
             <LoadingSpinner size={48} color="#00d4ff" />
-            <p className="loading-text" style={{ fontSize: '1rem', fontWeight: 600 }}>Analyzing with Gemini AI...</p>
+            <p className="loading-text" style={{ fontSize: '1rem', fontWeight: 600 }}>Analyzing resume...</p>
             <p className="loading-text">This may take 10–20 seconds</p>
           </div>
         )}

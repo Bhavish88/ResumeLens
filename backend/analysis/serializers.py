@@ -29,6 +29,7 @@ class AnalysisReportSerializer(serializers.ModelSerializer):
             'file_name',
             'uploaded_at',
             'ats_score',
+            'category_scores',
             'missing_skills',
             'strengths',
             'weaknesses',

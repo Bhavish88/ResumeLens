@@ -8,6 +8,12 @@ https://docs.djangoproject.com/en/5.2/howto/deployment/asgi/
 """
 
 import os
+from pathlib import Path
+from dotenv import load_dotenv
+
+# Load environment variables early
+base_dir = Path(__file__).resolve().parent.parent
+load_dotenv(base_dir / '.env', override=True)
 
 from django.core.asgi import get_asgi_application
 

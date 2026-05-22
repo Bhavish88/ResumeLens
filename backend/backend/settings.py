@@ -14,12 +14,12 @@ from dotenv import load_dotenv
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Load .env with explicit path — never relies on CWD
-load_dotenv(BASE_DIR / '.env')
+load_dotenv(BASE_DIR / '.env', override=True)
 
 # SECURITY
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-change-this-in-production-please')
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',') + ['testserver']
 
 # APPLICATIONS
 INSTALLED_APPS = [
@@ -147,6 +147,11 @@ CORS_ALLOW_CREDENTIALS = True
 
 # ─── GEMINI AI ────────────────────────────────────────────────────────────────
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY', '')
+# Print the first 10 characters temporarily for verification as requested by task 3
+_first_10 = GEMINI_API_KEY[:10] if GEMINI_API_KEY else "EMPTY"
+print(f"[Settings] Currently loaded GEMINI_API_KEY (first 10 chars): {_first_10}...")
+_masked = f"{GEMINI_API_KEY[:8]}...{GEMINI_API_KEY[-4:]}" if len(GEMINI_API_KEY) > 12 else "INVALID/EMPTY"
+print(f"[Settings] Loaded GEMINI_API_KEY: {_masked}")
 
 # ─── FILE UPLOAD LIMITS ──────────────────────────────────────────────────────
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10 MB

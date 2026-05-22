@@ -36,6 +36,7 @@ class AnalysisReport(models.Model):
     strengths = models.JSONField(default=list)
     weaknesses = models.JSONField(default=list)
     suggestions = models.JSONField(default=list)
+    category_scores = models.JSONField(default=dict)
 
     final_verdict = models.TextField(blank=True, default='')
     full_ai_response = models.TextField(blank=True, default='')

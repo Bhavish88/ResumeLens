@@ -38,67 +38,76 @@ def get_gemini_client():
 def build_analysis_prompt(resume_text: str, target_role: str) -> str:
     """
     Builds a structured prompt that forces Gemini to return
-    a parseable JSON response.
-
-    The key insight: by explicitly defining the JSON schema in the prompt,
-    we get consistent, parseable output instead of free-form text.
+    a detailed parseable JSON response including category scores and ATS recommendations.
     """
-    prompt = f"""You are a professional ATS (Applicant Tracking System) resume analyzer with 10+ years of experience in technical recruitment.
+    prompt = f"""You are a professional ATS (Applicant Tracking System) resume analyzer and technical recruiter with 10+ years of experience.
 
-Analyze the following resume for a **{target_role}** position.
+Analyze the following resume strictly for a **{target_role}** position.
 
-Your task is to provide a detailed, honest analysis. Return your response ONLY as valid JSON — no markdown, no code blocks, no extra text before or after. Just pure JSON.
+Your task is to provide a highly tailored, honest analysis. Return your response ONLY as valid JSON — no markdown, no code blocks, no extra text. Just pure JSON.
 
 Required JSON format:
 {{
-  "ats_score": <integer between 1 and 100>,
-  "missing_skills": [<list of specific technical skills missing for this role>],
-  "strengths": [<list of resume strengths — be specific, not generic>],
-  "weaknesses": [<list of weak sections or missing elements>],
-  "suggestions": [<list of concrete, actionable improvement suggestions>],
-  "final_verdict": "<2-3 sentence summary: overall impression and main recommendation>"
+  "category_scores": {{
+    "formatting": <integer between 0 and 20: formatting, spacing, margins, font style, and ATS parsing readiness>,
+    "skills_match": <integer between 0 and 25: relevance of technical skills matching a {target_role} role>,
+    "experience_quality": <integer between 0 and 20: job relevance, responsibilities, quantifiable achievements>,
+    "projects_portfolio": <integer between 0 and 15: project scope, tech stack, and GitHub portfolio presence>,
+    "education_certifications": <integer between 0 and 10: education relevance, certifications like AWS, Google, etc.>,
+    "resume_structure": <integer between 0 and 10: structure, flow, sections clarity (Objective, Education, Experience, etc.)>
+  }},
+  "ats_score": <integer total sum of category_scores: must be exactly equal to formatting + skills_match + experience_quality + projects_portfolio + education_certifications + resume_structure (sum will be between 0 and 100)>,
+  "missing_skills": ["<specific tech skill or library missing strictly for the target role {target_role}. Recommend ONLY role-relevant skills. Consider candidate experience level. Do not suggest high-level cloud/enterprise devops tools like Kubernetes unless context supports it.>"],
+  "strengths": ["<detailed role-specific resume strength matching a {target_role} position>"],
+  "weaknesses": ["<detailed weak section or missing element relative to a {target_role} candidate>"],
+  "suggestions": ["<actionable improvement recommendation to make the resume better for a {target_role} application>"],
+  "final_verdict": "<2-3 sentence overall recommendation summary: impression and advice for target role {target_role}>"
 }}
 
-Scoring guide for ats_score:
-  90-100 : Excellent — very strong match for the role
-  70-89  : Good — solid match with minor gaps
-  50-69  : Average — noticeable skill gaps
-  30-49  : Below average — significant improvements needed
-  1-29   : Poor — major restructuring required
-
-Resume to analyze:
----
-{resume_text}
----
-
-Remember: Return ONLY the JSON object. No explanation, no markdown formatting."""
+Strict Rules:
+1. Tailor all feedback, strengths, and missing skills strictly to the target role: **{target_role}**. Avoid generic suggestions.
+2. The total 'ats_score' must be the exact sum of the six category scores.
+3. Recommend only highly relevant skills for a **{target_role}** position.
+4. Return ONLY valid JSON. No prefix, no suffix, no markdown formatting. Just pure JSON."""
 
     return prompt
 
 
+def _clean_exception_message(error_str: str) -> str:
+    """
+    Extracts a clean, human-readable message from Google API errors.
+    E.g. extracts "API key expired. Please renew the API key." from a raw string.
+    """
+    # Look for 'message': '...' or "message": "..."
+    match = re.search(r'[\'"]message[\'"]:\s*[\'"]([^\'"]+)[\'"]', error_str)
+    if match:
+        return match.group(1)
+    
+    # Alternatively, look for a HTTP status code prefix
+    # E.g. "400 INVALID_ARGUMENT." -> remove or simplify
+    clean_str = re.sub(r'^\d+\s+[A-Z_]+\.?\s*', '', error_str)
+    # Remove any raw JSON-like brackets
+    clean_str = re.sub(r'\{.*\}', '', clean_str).strip()
+    if clean_str:
+        return clean_str
+        
+    return error_str
+
+
 def analyze_resume_with_gemini(resume_text: str, target_role: str) -> dict:
     """
-    Main function to analyze a resume using Gemini AI.
+    Main function to analyze a resume. Uses gemini-2.5-flash.
 
     Args:
         resume_text : Cleaned text extracted from the PDF
         target_role : Job role the user is targeting
 
     Returns:
-        A dictionary with the structured analysis result:
-        {
-            "ats_score": int,
-            "missing_skills": list[str],
-            "strengths": list[str],
-            "weaknesses": list[str],
-            "suggestions": list[str],
-            "final_verdict": str,
-            "full_ai_response": str,   <- the raw Gemini output
-            "error": None or str       <- error message if something fails
-        }
+        A dictionary with the structured analysis result.
     """
     result = {
         'ats_score': 0,
+        'category_scores': {},
         'missing_skills': [],
         'strengths': [],
         'weaknesses': [],
@@ -108,54 +117,70 @@ def analyze_resume_with_gemini(resume_text: str, target_role: str) -> dict:
         'error': None,
     }
 
+    # Validate inputs
+    if not resume_text or len(resume_text.strip()) < 50:
+        result['error'] = (
+            'Resume text is too short to analyze. '
+            'Please ensure your PDF contains readable text.'
+        )
+        return result
+
+    gemini_key = getattr(settings, 'GEMINI_API_KEY', '')
+    masked_key = f"{gemini_key[:8]}...{gemini_key[-4:]}" if len(gemini_key) > 12 else "INVALID/EMPTY"
+    print(f"[AIService] Calling Gemini API. Loaded key: {masked_key}")
+
+    if not gemini_key:
+        result['error'] = 'GEMINI_API_KEY is not configured. Please set GEMINI_API_KEY in your .env file.'
+        return result
+
+    model_name = 'gemini-2.5-flash'
     try:
-        # Validate inputs
-        if not resume_text or len(resume_text.strip()) < 50:
-            result['error'] = (
-                'Resume text is too short to analyze. '
-                'Please ensure your PDF contains readable text.'
-            )
-            return result
-
-        # Build the structured prompt
+        print(f"[AIService] Attempting analysis with Gemini model: {model_name}")
         prompt = build_analysis_prompt(resume_text, target_role)
-
-        # Call Gemini API using new google-genai SDK
-        client = get_gemini_client()
+        client = genai.Client(api_key=gemini_key)
         response = client.models.generate_content(
-            model='gemini-2.0-flash',
+            model=model_name,
             contents=prompt,
             config=types.GenerateContentConfig(
-                temperature=0.3,        # Lower = more consistent, less creative
-                max_output_tokens=2048,
+                temperature=0.3,
+                response_mime_type="application/json",
+                max_output_tokens=4096,
             ),
         )
-
         raw_response = response.text
         result['full_ai_response'] = raw_response
-
-        # Parse the JSON response
+        
+        # Parse
         parsed = _parse_gemini_response(raw_response)
         result.update(parsed)
-
-    except ValueError as e:
-        result['error'] = str(e)
+        
+        # Verify that it parsed successfully
+        if result['ats_score'] > 0 and result['final_verdict'] != 'Analysis could not be parsed. Please try again.':
+            print(f"[AIService] Successfully analyzed with Gemini model: {model_name}")
+            return result
+        else:
+            raise ValueError(f"AI response parsing failed. Raw response: {raw_response[:500]}")
     except Exception as e:
-        result['error'] = f'AI analysis failed: {str(e)}'
-        print(f'[GeminiService] Unexpected error: {e}')
-
-    return result
+        clean_err = _clean_exception_message(str(e))
+        print(f"[AIService] Gemini {model_name} failed: {clean_err}")
+        
+        # Print diagnostic info for debugging
+        print("----- DIAGNOSTIC INFO ON FAILURE -----")
+        print(f"Extracted resume text length: {len(resume_text) if resume_text else 0}")
+        print(f"Exact Gemini response: {result.get('full_ai_response')}")
+        print("--------------------------------------")
+        
+        result['error'] = f"AI analysis failed: {clean_err}"
+        return result
 
 
 def _parse_gemini_response(raw_response: str) -> dict:
     """
     Parse Gemini's raw text response into structured data.
-
-    Gemini sometimes wraps JSON in markdown code blocks like ```json ... ```
-    This function handles that case and falls back gracefully.
     """
     default = {
         'ats_score': 0,
+        'category_scores': {},
         'missing_skills': [],
         'strengths': [],
         'weaknesses': [],
@@ -181,8 +206,17 @@ def _parse_gemini_response(raw_response: str) -> dict:
 
         data = json.loads(json_str)
 
+        ats_score = _safe_int(data.get('ats_score', 0), 0, 100)
+        category_scores = _clean_category_scores(data.get('category_scores', {}), ats_score)
+        
+        # Re-align total score to be the exact sum of category scores for consistency
+        total_from_categories = sum(category_scores.values())
+        if total_from_categories > 0:
+            ats_score = total_from_categories
+
         return {
-            'ats_score': _safe_int(data.get('ats_score', 0), 0, 100),
+            'ats_score': ats_score,
+            'category_scores': category_scores,
             'missing_skills': _safe_list(data.get('missing_skills', [])),
             'strengths': _safe_list(data.get('strengths', [])),
             'weaknesses': _safe_list(data.get('weaknesses', [])),
@@ -194,6 +228,38 @@ def _parse_gemini_response(raw_response: str) -> dict:
         print(f'[GeminiService] JSON parse error: {e}')
         print(f'[GeminiService] Raw response was: {raw_response[:500]}')
         return default
+
+
+def _clean_category_scores(scores_dict, ats_score: int) -> dict:
+    """Ensure category scores are valid and sum correctly. Compute fallbacks if missing."""
+    if not isinstance(scores_dict, dict) or not scores_dict:
+        # Distribute ats_score proportionally
+        f = round(ats_score * 0.20)
+        sm = round(ats_score * 0.25)
+        eq = round(ats_score * 0.20)
+        pp = round(ats_score * 0.15)
+        ec = round(ats_score * 0.10)
+        rs = ats_score - (f + sm + eq + pp + ec)
+        return {
+            'formatting': f,
+            'skills_match': sm,
+            'experience_quality': eq,
+            'projects_portfolio': pp,
+            'education_certifications': ec,
+            'resume_structure': max(0, rs)
+        }
+    
+    return {
+        'formatting': _safe_int(scores_dict.get('formatting', 0), 0, 20),
+        'skills_match': _safe_int(scores_dict.get('skills_match', 0), 0, 25),
+        'experience_quality': _safe_int(scores_dict.get('experience_quality', 0), 0, 20),
+        'projects_portfolio': _safe_int(scores_dict.get('projects_portfolio', 0), 0, 15),
+        'education_certifications': _safe_int(scores_dict.get('education_certifications', 0), 0, 10),
+        'resume_structure': _safe_int(scores_dict.get('resume_structure', 0), 0, 10)
+    }
+
+
+# Helper functions for clean parsed data removed.
 
 
 def _safe_int(value, min_val=0, max_val=100) -> int:

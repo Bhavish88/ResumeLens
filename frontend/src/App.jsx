@@ -1,9 +1,6 @@
 /**
  * App.jsx — React Router setup
- *
- * All routes are defined here.
- * Public routes: /, /login, /register
- * Protected routes (require login): /dashboard, /upload, /result/:resumeId, /history
+ * Fixed: Don't redirect login/register during auth loading state (avoids flash)
  */
 
 import { Routes, Route, Navigate } from 'react-router-dom';
@@ -19,26 +16,26 @@ import AnalysisResultPage from './pages/AnalysisResultPage';
 import HistoryPage        from './pages/HistoryPage';
 
 function AppRoutes() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, loading } = useAuth();
+
+  // While checking session, don't redirect login/register — avoids flash
+  const redirectIfAuthed = (element) => {
+    if (loading) return null;
+    return isAuthenticated ? <Navigate to="/dashboard" replace /> : element;
+  };
 
   return (
     <Routes>
       {/* Public routes */}
       <Route path="/" element={<LandingPage />} />
-      <Route
-        path="/login"
-        element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <LoginPage />}
-      />
-      <Route
-        path="/register"
-        element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <RegisterPage />}
-      />
+      <Route path="/login"    element={redirectIfAuthed(<LoginPage />)} />
+      <Route path="/register" element={redirectIfAuthed(<RegisterPage />)} />
 
       {/* Protected routes */}
-      <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
-      <Route path="/upload"    element={<ProtectedRoute><UploadPage /></ProtectedRoute>} />
-      <Route path="/result/:resumeId" element={<ProtectedRoute><AnalysisResultPage /></ProtectedRoute>} />
-      <Route path="/history"   element={<ProtectedRoute><HistoryPage /></ProtectedRoute>} />
+      <Route path="/dashboard"          element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+      <Route path="/upload"             element={<ProtectedRoute><UploadPage /></ProtectedRoute>} />
+      <Route path="/result/:resumeId"   element={<ProtectedRoute><AnalysisResultPage /></ProtectedRoute>} />
+      <Route path="/history"            element={<ProtectedRoute><HistoryPage /></ProtectedRoute>} />
 
       {/* Catch-all */}
       <Route path="*" element={<Navigate to="/" replace />} />

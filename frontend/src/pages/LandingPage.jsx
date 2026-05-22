@@ -8,34 +8,34 @@ import { Link } from 'react-router-dom';
 
 const features = [
   {
-    icon: '🤖',
-    title: 'Gemini AI Analysis',
-    desc: 'Powered by Google Gemini 2.0 Flash — the same AI used by professionals to evaluate thousands of resumes.',
+    icon: '📋',
+    title: 'In-Depth Evaluation',
+    desc: 'Get structured feedback on content, formatting, and relevance based on professional hiring standards.',
   },
   {
     icon: '📊',
-    title: 'ATS Score (1–100)',
-    desc: 'Get a precise Applicant Tracking System score that tells you exactly how recruiters\' software rates your resume.',
+    title: 'Match Score (1–100)',
+    desc: 'Get an estimate of how well your resume matches your target job requirements and industry standards.',
   },
   {
     icon: '🎯',
     title: 'Role-Specific Feedback',
-    desc: 'Upload for any role — Python Developer, Product Manager, Data Scientist — and get feedback tailored to that job.',
+    desc: 'Tailor your analysis to specific career paths, like engineering, analytics, design, or project management.',
   },
   {
-    icon: '⚡',
-    title: 'Missing Skills Detection',
-    desc: 'Instantly identify which skills are missing from your resume vs. what the industry expects for your target role.',
+    icon: '🔍',
+    title: 'Skill Gap Identification',
+    desc: 'Discover critical technical and soft skills that are highly valued but missing from your current profile.',
   },
   {
     icon: '💡',
-    title: 'Actionable Suggestions',
-    desc: 'Don\'t just hear what\'s wrong — get specific, numbered steps to improve your resume right now.',
+    title: 'Actionable Steps',
+    desc: 'Receive specific, clear recommendations and adjustments to make your achievements stand out.',
   },
   {
     icon: '📈',
-    title: 'Track Your Progress',
-    desc: 'Upload multiple versions and watch your ATS score improve over time on your personal dashboard.',
+    title: 'Track Improvements',
+    desc: 'Compare multiple versions of your resume to systematically improve your scores and polish your presentation.',
   },
 ];
 
@@ -45,7 +45,6 @@ function LandingPage() {
       {/* Top Nav */}
       <nav className="landing-nav">
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span style={{ fontSize: '1.4rem' }}>⚡</span>
           <span style={{
             fontSize: '1.15rem',
             fontWeight: 700,
@@ -53,7 +52,7 @@ function LandingPage() {
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text',
-          }}>ResumeAI</span>
+          }}>ResumeLens</span>
         </div>
         <div className="landing-nav-links">
           <Link to="/login" className="btn btn-secondary" style={{ padding: '8px 20px', fontSize: '0.875rem' }}>
@@ -68,20 +67,19 @@ function LandingPage() {
       {/* Hero */}
       <section className="hero">
         <div className="hero-badge">
-          <span>✨</span> Powered by Google Gemini AI
+          Professional Resume Evaluation
         </div>
         <h1 className="hero-title">
-          Get Your Resume<br />
-          <span className="gradient-text">AI-Analyzed in Seconds</span>
+          Optimize your resume for<br />
+          <span className="gradient-text">your next career move</span>
         </h1>
         <p className="hero-subtitle">
-          Upload your PDF, pick your target role, and get a detailed ATS score,
-          missing skills, strengths, and specific improvement suggestions —
-          all powered by Gemini AI.
+          Get detailed insights on how recruiters and tracking systems evaluate your experience.
+          Identify missing skills, highlight your strengths, and receive clear, actionable recommendations.
         </p>
         <div className="hero-cta">
           <Link to="/register" className="btn btn-primary btn-lg">
-            Analyze My Resume →
+            Review Your Resume →
           </Link>
           <Link to="/login" className="btn btn-secondary btn-lg">
             Sign In
@@ -91,10 +89,10 @@ function LandingPage() {
 
       {/* Features */}
       <section className="features-section">
-        <p className="section-label">What You Get</p>
-        <h2 className="section-title">Everything You Need to Land the Job</h2>
+        <p className="section-label">Features</p>
+        <h2 className="section-title">Clean, Precise, Objective Feedback</h2>
         <p className="section-subtitle">
-          Stop guessing. Get precise, AI-driven feedback on your resume in under 30 seconds.
+          Stop guessing. Get detailed, structured feedback to improve your response rates and land more interviews.
         </p>
         <div className="features-grid">
           {features.map((f, i) => (
@@ -109,7 +107,7 @@ function LandingPage() {
 
       {/* Footer */}
       <footer className="landing-footer">
-        <p>© 2026 ResumeAI · Built with Django + React + Google Gemini</p>
+        <p>© 2026 ResumeLens</p>
       </footer>
     </div>
   );

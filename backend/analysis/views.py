@@ -56,16 +56,22 @@ class AnalyzeResumeView(APIView):
 
         # Step 4: Handle AI errors
         if ai_result.get('error'):
-            return Response({
+            response_payload = {
                 'message': 'AI analysis failed.',
                 'error': ai_result['error'],
-            }, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+            }
+            # Print diagnostic payload as requested by task 5 & 15
+            print("----- FRONTEND RESPONSE PAYLOAD ON FAILURE -----")
+            print(f"Payload: {response_payload}")
+            print("-------------------------------------------------")
+            return Response(response_payload, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
         # Step 5: Save or update the analysis report
         report, created = AnalysisReport.objects.update_or_create(
             resume=resume,
             defaults={
                 'ats_score': ai_result['ats_score'],
+                'category_scores': ai_result.get('category_scores', {}),
                 'missing_skills': ai_result['missing_skills'],
                 'strengths': ai_result['strengths'],
                 'weaknesses': ai_result['weaknesses'],
