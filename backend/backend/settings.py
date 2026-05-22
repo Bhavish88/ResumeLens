@@ -5,6 +5,7 @@ Django settings for AI Resume Analyzer backend.
 from pathlib import Path
 from datetime import timedelta
 import os
+import dj_database_url
 from dotenv import load_dotenv
 
 # BASE_DIR must be defined FIRST so we can pass the explicit .env path.
@@ -44,6 +45,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'corsheaders.middleware.CorsMiddleware',           # CORS must be high
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -104,6 +106,7 @@ USE_TZ = True
 # STATIC & MEDIA FILES
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
