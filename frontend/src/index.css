@@ -206,24 +206,31 @@ input, textarea { font-family: inherit; }
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 12px 24px;
-  border-radius: var(--radius-md);
-  font-size: 0.9rem;
+  height: 44px;
+  padding: 0 20px;
+  border-radius: 8px;
+  font-size: 0.875rem;
   font-weight: 600;
   border: none;
-  transition: all 0.2s;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   cursor: pointer;
+  white-space: nowrap;
+  user-select: none;
 }
 
 .btn-primary {
   background: linear-gradient(135deg, var(--primary), var(--primary-dark));
   color: #fff;
-  box-shadow: 0 4px 15px rgba(108,99,255,0.35);
+  box-shadow: 0 4px 12px rgba(108, 99, 255, 0.2);
 }
 
 .btn-primary:hover:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(108,99,255,0.5);
+  box-shadow: 0 6px 16px rgba(108, 99, 255, 0.3);
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: translateY(0) scale(0.98);
 }
 
 .btn-primary:disabled {
@@ -788,8 +795,13 @@ input, textarea { font-family: inherit; }
 
 .score-gauge-wrapper {
   position: relative;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
+  width: var(--gauge-size, 180px);
+  height: var(--gauge-size, 180px);
+  margin: 0 auto;
 }
 
 .score-gauge-center {
@@ -800,25 +812,33 @@ input, textarea { font-family: inherit; }
   align-items: center;
   justify-content: center;
   gap: 2px;
+  text-align: center;
 }
 
 .score-number {
-  font-size: 2.6rem;
   font-weight: 800;
   line-height: 1;
 }
 
 .score-label {
-  font-size: 0.78rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  margin-top: -2px;
 }
 
 .score-sublabel {
-  font-size: 0.72rem;
   color: var(--text-muted);
   font-weight: 500;
+  margin-top: 1px;
+}
+
+@keyframes gauge-glow-pulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 6px var(--glow-color, rgba(108,99,255,0.3)));
+  }
+  50% {
+    filter: drop-shadow(0 0 14px var(--glow-color, rgba(108,99,255,0.65)));
+  }
 }
 
 .result-meta { flex: 1; min-width: 240px; }
@@ -1159,9 +1179,8 @@ input, textarea { font-family: inherit; }
   .auth-card { padding: 28px 18px; }
 
   /* Score gauge: smaller on tiny screens */
-  .result-hero .score-gauge-wrapper svg {
-    width: 160px;
-    height: 160px;
+  .result-hero .score-gauge-wrapper {
+    --gauge-size: 160px !important;
   }
 
   /* Analysis item right side: wrap score + delete */
@@ -1455,3 +1474,79 @@ input, textarea { font-family: inherit; }
     color: #111111 !important;
   }
 }
+
+/* ── PDF EXPORT TEMPLATE STYLES ────────────────────────────────────────── */
+.pdf-offscreen-container {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  width: 794px;
+  background: #07070f;
+  z-index: -1000;
+  pointer-events: none;
+}
+
+.pdf-page {
+  width: 794px;
+  height: 1123px;
+  padding: 40px 48px;
+  box-sizing: border-box;
+  background-color: #07070f;
+  color: #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.pdf-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 10px;
+  margin-bottom: 4px;
+}
+
+.pdf-header .logo-text {
+  font-size: 1.25rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--primary-light), var(--accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.pdf-header-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.pdf-footer {
+  position: absolute;
+  bottom: 20px;
+  left: 48px;
+  right: 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+
+.pdf-footer-brand {
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.pdf-footer-page {
+  font-weight: 500;
+}
+

@@ -100,11 +100,11 @@ function DashboardPage() {
             </div>
 
             {/* Quick Action */}
-            <div style={{ marginBottom: 32 }}>
+            <div className="btn-group dashboard-actions" style={{ marginBottom: 32, justifyContent: 'center' }}>
               <Link to="/upload" className="btn btn-primary btn-lg">
                 ⬆ Upload New Resume
               </Link>
-              <Link to="/history" className="btn btn-secondary btn-lg" style={{ marginLeft: 12 }}>
+              <Link to="/history" className="btn btn-secondary btn-lg">
                 View All History
               </Link>
             </div>

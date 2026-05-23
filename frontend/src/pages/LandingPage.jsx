@@ -54,11 +54,11 @@ function LandingPage() {
             backgroundClip: 'text',
           }}>ResumeLens</span>
         </div>
-        <div className="landing-nav-links">
-          <Link to="/login" className="btn btn-secondary" style={{ padding: '8px 20px', fontSize: '0.875rem' }}>
+        <div className="btn-group landing-nav-links">
+          <Link to="/login" className="btn btn-secondary btn-sm">
             Sign In
           </Link>
-          <Link to="/register" className="btn btn-primary" style={{ padding: '8px 20px', fontSize: '0.875rem' }}>
+          <Link to="/register" className="btn btn-primary btn-sm">
             Get Started Free
           </Link>
         </div>
@@ -77,7 +77,7 @@ function LandingPage() {
           Get detailed insights on how recruiters and tracking systems evaluate your experience.
           Identify missing skills, highlight your strengths, and receive clear, actionable recommendations.
         </p>
-        <div className="hero-cta">
+        <div className="btn-group hero-cta">
           <Link to="/register" className="btn btn-primary btn-lg">
             Review Your Resume →
           </Link>
