@@ -481,13 +481,28 @@ input, textarea { font-family: inherit; }
   background: rgba(7,7,15,0.8);
   backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border);
-  padding: 16px 40px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+}
+
+.landing-nav-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 24px;
 }
 
-.landing-nav-links { display: flex; gap: 12px; }
+.landing-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
 
 .hero {
   padding: 160px 24px 100px;
@@ -1181,15 +1196,11 @@ input, textarea { font-family: inherit; }
   .navbar-inner  { padding: 0 16px; }
 
   /* Landing nav: tighten padding */
-  .landing-nav {
-    padding: 14px 20px;
+  .landing-nav-inner {
+    padding: 0 16px;
   }
   .landing-nav-links {
     gap: 8px;
-  }
-  .landing-nav-links .btn {
-    padding: 7px 14px;
-    font-size: 0.8rem;
   }
 
   /* Hero section */

@@ -44,23 +44,25 @@ function LandingPage() {
     <div className="landing-page">
       {/* Top Nav */}
       <nav className="landing-nav">
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span style={{
-            fontSize: '1.15rem',
-            fontWeight: 700,
-            background: 'linear-gradient(135deg, #a78bfa, #00d4ff)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-          }}>ResumeLens</span>
-        </div>
-        <div className="btn-group landing-nav-links">
-          <Link to="/login" className="btn btn-secondary btn-sm">
-            Sign In
-          </Link>
-          <Link to="/register" className="btn btn-primary btn-sm">
-            Get Started Free
-          </Link>
+        <div className="landing-nav-inner">
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{
+              fontSize: '1.15rem',
+              fontWeight: 700,
+              background: 'linear-gradient(135deg, #a78bfa, #00d4ff)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}>ResumeLens</span>
+          </div>
+          <div className="landing-nav-links">
+            <Link to="/login" className="btn btn-secondary btn-sm">
+              Sign In
+            </Link>
+            <Link to="/register" className="btn btn-primary btn-sm">
+              Get Started Free
+            </Link>
+          </div>
         </div>
       </nav>
 
