@@ -16,6 +16,7 @@ function LoginPage() {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -71,7 +72,7 @@ function LoginPage() {
             <label className="form-label" htmlFor="password">Password</label>
             <input
               id="password"
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               name="password"
               className="form-input"
               placeholder="••••••••"
@@ -79,6 +80,15 @@ function LoginPage() {
               onChange={handleChange}
               required
             />
+            <button
+              type="button"
+              className="password-toggle-btn"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => setShowPassword((s) => !s)}
+              style={{ marginTop: 8 }}
+            >
+              {showPassword ? 'Hide' : 'Show'}
+            </button>
           </div>
 
           <button
@@ -94,7 +104,7 @@ function LoginPage() {
 
         <div className="auth-footer">
           Don't have an account?{' '}
-          <Link to="/register">Create one free</Link>
+          <Link to="/register">Create one </Link>
         </div>
       </div>
     </div>

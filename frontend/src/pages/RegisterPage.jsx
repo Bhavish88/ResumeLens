@@ -23,6 +23,8 @@ function RegisterPage() {
   const [errors, setErrors] = useState({});
   const [globalError, setGlobalError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword2, setShowPassword2] = useState(false);
 
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -112,7 +114,7 @@ function RegisterPage() {
             <label className="form-label" htmlFor="reg-password">Password</label>
             <input
               id="reg-password"
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               name="password"
               className="form-input"
               placeholder="Minimum 8 characters"
@@ -120,6 +122,15 @@ function RegisterPage() {
               onChange={handleChange}
               required
             />
+            <button
+              type="button"
+              className="password-toggle-btn"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => setShowPassword((s) => !s)}
+              style={{ marginTop: 8 }}
+            >
+              {showPassword ? 'Hide' : 'Show'}
+            </button>
             {errors.password && <span className="form-error">{errors.password}</span>}
           </div>
 
@@ -127,7 +138,7 @@ function RegisterPage() {
             <label className="form-label" htmlFor="password2">Confirm Password</label>
             <input
               id="password2"
-              type="password"
+              type={showPassword2 ? 'text' : 'password'}
               name="password2"
               className="form-input"
               placeholder="Repeat your password"
@@ -135,6 +146,15 @@ function RegisterPage() {
               onChange={handleChange}
               required
             />
+            <button
+              type="button"
+              className="password-toggle-btn"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => setShowPassword2((s) => !s)}
+              style={{ marginTop: 8 }}
+            >
+              {showPassword2 ? 'Hide' : 'Show'}
+            </button>
             {errors.password2 && <span className="form-error">{errors.password2}</span>}
           </div>
 
