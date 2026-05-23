@@ -100,7 +100,7 @@ function DashboardPage() {
             </div>
 
             {/* Quick Action */}
-            <div className="btn-group dashboard-actions" style={{ marginBottom: 32, justifyContent: 'center' }}>
+            <div className="btn-group btn-group-center dashboard-actions" style={{ marginBottom: 40 }}>
               <Link to="/upload" className="btn btn-primary btn-lg">
                 ⬆ Upload New Resume
               </Link>

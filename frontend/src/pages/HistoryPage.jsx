@@ -127,7 +127,7 @@ function HistoryPage() {
                 </div>
 
                 {/* Right: score + delete */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 }}>
+                <div className="analysis-item-right">
                   <ScorePill score={report.ats_score} />
                   <button
                     className="btn btn-danger btn-sm"

@@ -109,14 +109,14 @@ function ScoreGauge({ score = 0, size = 180, animate = true }) {
       </svg>
 
       {/* Center text */}
-      <div className="score-gauge-center" style={{ gap: '4px' }}>
-        <span className="score-number animate-fade-in" style={{ color, fontSize: size > 160 ? '2.8rem' : '2.3rem' }}>
+      <div className="score-gauge-center">
+        <span className="score-number animate-fade-in" style={{ color }}>
           {displayScore}
         </span>
-        <span className="score-label" style={{ color, fontSize: size > 160 ? '0.8rem' : '0.72rem', letterSpacing: '0.12em' }}>
+        <span className="score-label" style={{ color }}>
           {getLabel(score)}
         </span>
-        <span className="score-sublabel" style={{ fontSize: size > 160 ? '0.72rem' : '0.66rem' }}>
+        <span className="score-sublabel">
           ATS Score
         </span>
       </div>

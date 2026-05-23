@@ -71,15 +71,17 @@ function AnalysisResultPage() {
         throw new Error('PDF template refs are not initialized.');
       }
 
-      // Configure html2canvas for high quality 2x resolution
+      // Configure html2canvas for high quality 3x resolution and static viewport locks
       const canvasOpts = {
-        scale: 2,
+        scale: 3,
         useCORS: true,
         allowTaint: true,
         backgroundColor: '#07070f',
         logging: false,
         width: 794,
-        height: 1123
+        height: 1123,
+        windowWidth: 794,
+        windowHeight: 1123
       };
 
       const canvas1 = await html2canvas(page1, canvasOpts);
@@ -366,20 +368,19 @@ function AnalysisResultPage() {
                   <span className="pdf-header-label">Resume Evaluation Report</span>
                 </div>
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: 40, marginTop: 20 }}>
-                  <ScoreGauge score={report.ats_score} size={150} animate={false} />
+                <div style={{ display: 'flex', alignItems: 'center', gap: 32, background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border)', borderRadius: '12px', padding: '24px', marginTop: 16 }}>
+                  <ScoreGauge score={report.ats_score} size={120} animate={false} />
                   <div style={{ flex: 1 }}>
-                    <h2 style={{ fontSize: '1.6rem', fontWeight: 800, marginBottom: 8, color: 'var(--text-primary)' }}>
+                    <h2 style={{ fontSize: '1.35rem', fontWeight: 800, marginBottom: 12, color: 'var(--text-primary)', letterSpacing: '-0.01em' }}>
                       ATS Evaluation Summary
                     </h2>
-                    <div style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', marginBottom: 4 }}>
-                      <strong>Target Role:</strong> {report.target_role}
-                    </div>
-                    <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: 4 }}>
-                      <strong>File:</strong> {report.file_name}
-                    </div>
-                    <div style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-                      Report Generated on {formatDate(report.created_at)}
+                    <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '8px 16px', fontSize: '0.85rem' }}>
+                      <span style={{ color: 'var(--text-muted)', fontWeight: 600 }}>TARGET ROLE</span>
+                      <span style={{ color: 'var(--text-secondary)', fontWeight: 500 }}>{report.target_role}</span>
+                      <span style={{ color: 'var(--text-muted)', fontWeight: 600 }}>FILE NAME</span>
+                      <span style={{ color: 'var(--text-secondary)', fontWeight: 500, wordBreak: 'break-all' }}>{report.file_name}</span>
+                      <span style={{ color: 'var(--text-muted)', fontWeight: 600 }}>DATE ANALYZED</span>
+                      <span style={{ color: 'var(--text-secondary)', fontWeight: 500 }}>{formatDate(report.created_at)}</span>
                     </div>
                   </div>
                 </div>
