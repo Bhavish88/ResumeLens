@@ -60,7 +60,7 @@ function LandingPage() {
               Sign In
             </Link>
             <Link to="/register" className="btn btn-primary btn-sm">
-              Get Started Free
+              Get Started 
             </Link>
           </div>
         </div>
