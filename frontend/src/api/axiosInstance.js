@@ -25,6 +25,7 @@ const BACKEND_URL = import.meta.env.VITE_API_URL || 'https://resumelens-8u2t.onr
 
 const axiosInstance = axios.create({
   baseURL: BACKEND_URL,
+  timeout: 20000, // 20 seconds timeout safeguard
   headers: {
     'Content-Type': 'application/json',
   },

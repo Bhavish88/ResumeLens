@@ -1707,4 +1707,319 @@ input, textarea { font-family: inherit; }
   display: block;
 }
 
+/* ==========================================================================
+   TERMINAL BOOTSTRAP SYSTEM STYLES
+   Matches developer-tool dark theme with primary/accent/danger glows
+   ========================================================================== */
+
+.terminal-box {
+  background: #090912;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg), 0 0 20px rgba(108, 99, 255, 0.1);
+  overflow: hidden;
+  margin: 40px auto;
+  font-family: 'Fira Code', 'Courier New', Courier, monospace;
+}
+
+.anim-pulse-glow {
+  animation: pulse-glow-terminal 4s infinite ease-in-out;
+}
+
+@keyframes pulse-glow-terminal {
+  0%, 100% {
+    border-color: var(--border-light);
+    box-shadow: var(--shadow-lg), 0 0 20px rgba(108, 99, 255, 0.1);
+  }
+  50% {
+    border-color: rgba(108, 99, 255, 0.4);
+    box-shadow: var(--shadow-lg), 0 0 35px rgba(108, 99, 255, 0.25);
+  }
+}
+
+.terminal-header {
+  background: #111122;
+  border-bottom: 1px solid var(--border);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.terminal-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.term-btn {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.term-close { background: var(--danger); }
+.term-minimize { background: var(--warning); }
+.term-maximize { background: var(--success); }
+
+.terminal-title {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: 500;
+  font-family: inherit;
+}
+
+.terminal-body {
+  padding: 24px;
+}
+
+/* Boot steps checklist */
+.boot-steps-progress {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.boot-step-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-family: inherit;
+  transition: all 0.3s ease;
+}
+
+.boot-step-item.active {
+  color: var(--text-primary);
+}
+
+.boot-step-item.done {
+  color: var(--success);
+}
+
+.step-status-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: bold;
+  border: 1px solid var(--border-light);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.boot-step-item.active .step-status-icon {
+  border-color: var(--primary-light);
+  color: var(--primary-light);
+  background: rgba(108, 99, 255, 0.1);
+  box-shadow: 0 0 8px rgba(108, 99, 255, 0.3);
+}
+
+.boot-step-item.done .step-status-icon {
+  border-color: var(--success);
+  color: var(--success);
+  background: rgba(0, 229, 160, 0.1);
+}
+
+.step-status-text {
+  font-weight: 500;
+}
+
+.terminal-divider {
+  border: none;
+  border-top: 1px dashed var(--border-light);
+  margin: 20px 0;
+}
+
+/* Console logs */
+.terminal-console-output {
+  background: #040409;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  max-height: 240px;
+  overflow-y: auto;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  text-align: left;
+}
+
+.terminal-line {
+  margin-bottom: 6px;
+  font-family: inherit;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.line-time {
+  color: var(--text-muted);
+}
+
+.line-system { color: var(--accent); }
+.line-info { color: var(--text-secondary); }
+.line-success { color: var(--success); }
+.line-warn { color: var(--warning); }
+.line-error { color: var(--danger); }
+
+.line-active-cursor {
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.terminal-cursor {
+  animation: blink-cursor 1s step-end infinite;
+  color: var(--primary-light);
+}
+
+@keyframes blink-cursor {
+  from, to { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* Cold Start Banner */
+.cold-start-banner {
+  margin-top: 24px;
+  background: rgba(255, 179, 71, 0.06);
+  border: 1px solid rgba(255, 179, 71, 0.25);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  text-align: left;
+}
+
+.cold-start-banner-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--warning);
+  margin-bottom: 6px;
+  font-family: inherit;
+}
+
+.cold-start-banner-desc {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0;
+  font-family: inherit;
+}
+
+/* Diagnostic Error Card */
+.terminal-error-card {
+  background: #0d060a;
+  border: 1px solid rgba(255, 79, 107, 0.35);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg), 0 0 25px rgba(255, 79, 107, 0.12);
+  overflow: hidden;
+  margin: 40px auto;
+  font-family: 'Fira Code', 'Courier New', Courier, monospace;
+}
+
+.terminal-error-header {
+  background: #190a0f;
+  border-bottom: 1px solid rgba(255, 79, 107, 0.2);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.error-dot {
+  width: 12px;
+  height: 12px;
+  background: var(--danger);
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 8px var(--danger);
+}
+
+.terminal-error-title {
+  color: #ff8099;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.terminal-error-body {
+  padding: 32px 24px;
+}
+
+.error-fallback-hero {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.error-fallback-icon {
+  font-size: 3.5rem;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.error-fallback-title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #ff4f6b;
+  margin-bottom: 8px;
+}
+
+.error-fallback-message {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.error-details-console {
+  background: #050204;
+  border: 1px solid rgba(255, 79, 107, 0.15);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-bottom: 28px;
+  text-align: left;
+}
+
+.details-header {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #ff8099;
+  letter-spacing: 0.05em;
+  margin-bottom: 10px;
+}
+
+.details-code {
+  font-size: 0.8rem;
+  color: #ffb8c6;
+  white-space: pre-wrap;
+  word-break: break-all;
+  margin: 0;
+  max-height: 200px;
+  overflow-y: auto;
+  line-height: 1.5;
+}
+
+.error-fallback-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn-retry {
+  animation: pulse-glow-button 2s infinite ease-in-out;
+}
+
+@keyframes pulse-glow-button {
+  0%, 100% {
+    box-shadow: 0 4px 12px rgba(108, 99, 255, 0.2);
+  }
+  50% {
+    box-shadow: 0 4px 20px rgba(108, 99, 255, 0.55);
+  }
+}
+
+
 

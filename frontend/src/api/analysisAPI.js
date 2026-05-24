@@ -31,7 +31,7 @@ export const getReportByResume = (resumeId) =>
 export const getHistory = () => axiosInstance.get('/api/analysis/history/');
 
 // Get dashboard stats: total resumes, avg score, best score, recent analyses
-export const getDashboard = () => axiosInstance.get('/api/analysis/dashboard/');
+export const getDashboard = (config = {}) => axiosInstance.get('/api/analysis/dashboard/', config);
 
 // Delete a specific analysis report (resume stays)
 export const deleteReport = (reportId) =>
