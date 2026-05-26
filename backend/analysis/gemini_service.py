@@ -68,7 +68,23 @@ Strict Rules:
 1. Tailor all feedback, strengths, and missing skills strictly to the target role: **{target_role}**. Avoid generic suggestions.
 2. The total 'ats_score' must be the exact sum of the six category scores.
 3. Recommend only highly relevant skills for a **{target_role}** position.
-4. Return ONLY valid JSON. No prefix, no suffix, no markdown formatting. Just pure JSON."""
+4. Return ONLY valid JSON. No prefix, no suffix, no markdown formatting. Just pure JSON.
+
+CRITICAL SCORING & MISMATCH PENALTY RULES (MUST BE STRICTLY ENFORCED):
+- **Honest & Critical Evaluation**: Do NOT inflate scores to be nice or polite. Scores above 70 should be reserved for resumes that genuinely align well with the target role. A typical average resume should score between 40 and 65.
+- **Complete Mismatch Penalty**: If the resume is for a completely different career field or industry (e.g. a chef, driver, or cashier applying for a **{target_role}** role), or if it contains gibberish/lorem ipsum, you MUST heavily penalize them:
+  - `skills_match` MUST be scored between 0 and 3.
+  - `experience_quality` MUST be scored between 0 and 3.
+  - `projects_portfolio` MUST be scored between 0 and 3.
+  - This should result in a total `ats_score` of 30 or lower.
+  - In `strengths`, state clearly that there are no strengths matching the target role of **{target_role}**.
+  - In `weaknesses` and `suggestions`, explain clearly that the resume is completely mismatched and the candidate needs to build a completely new resume tailored to the target role.
+- **Thin Content Penalty**: If the resume contains very little information (less than 1-2 paragraphs of readable text), give extremely low scores across all categories, reflecting an incomplete profile.
+
+RESUME CONTENT TO ANALYZE:
+---
+{resume_text}
+---"""
 
     return prompt
 
