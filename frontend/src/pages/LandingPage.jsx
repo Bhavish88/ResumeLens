@@ -5,9 +5,14 @@
  * glowing capability cards, timeline process tracker, and responsive CTA.
  */
 
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 function LandingPage() {
+  const { isAuthenticated } = useAuth();
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
     <div className="landing-page">
       {/* Top Navigation */}
@@ -16,6 +21,8 @@ function LandingPage() {
           <Link to="/" className="landing-nav-brand">
             ResumeLens
           </Link>
+
+          {/* Desktop Links */}
           <div className="landing-nav-links">
             <a href="#features" className="landing-nav-link">
               Features
@@ -23,19 +30,80 @@ function LandingPage() {
             <a href="#how-it-works" className="landing-nav-link">
               How It Works
             </a>
-            <Link to="/dashboard" className="landing-nav-link">
-              Dashboard
-            </Link>
+            <a href="#faq" className="landing-nav-link">
+              FAQ
+            </a>
+            {isAuthenticated && (
+              <Link to="/dashboard" className="landing-nav-link">
+                Dashboard
+              </Link>
+            )}
           </div>
+
+          {/* Desktop Actions */}
           <div className="landing-nav-actions">
-            <Link to="/login" className="btn-signin">
-              Sign In
-            </Link>
-            <Link to="/register" className="btn-started">
-              Get Started
-            </Link>
+            {isAuthenticated ? (
+              <Link to="/dashboard" className="btn-started">
+                Dashboard
+              </Link>
+            ) : (
+              <>
+                <Link to="/login" className="btn-signin">
+                  Sign In
+                </Link>
+                <Link to="/register" className="btn-started">
+                  Get Started
+                </Link>
+              </>
+            )}
           </div>
+
+          {/* Hamburger — mobile only */}
+          <button
+            className={`hamburger-btn${menuOpen ? ' open' : ''}`}
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label="Toggle menu"
+          >
+            <span />
+            <span />
+            <span />
+          </button>
         </div>
+
+        {/* Mobile Dropdown Menu */}
+        {menuOpen && (
+          <div className="mobile-menu mobile-menu--open">
+            <a href="#features" className="mobile-menu-link" onClick={() => setMenuOpen(false)}>
+              Features
+            </a>
+            <a href="#how-it-works" className="mobile-menu-link" onClick={() => setMenuOpen(false)}>
+              How It Works
+            </a>
+            <a href="#faq" className="mobile-menu-link" onClick={() => setMenuOpen(false)}>
+              FAQ
+            </a>
+            {isAuthenticated && (
+              <Link to="/dashboard" className="mobile-menu-link" onClick={() => setMenuOpen(false)}>
+                Dashboard
+              </Link>
+            )}
+            <div className="mobile-menu-divider" />
+            {isAuthenticated ? (
+              <Link to="/dashboard" className="mobile-menu-cta" onClick={() => setMenuOpen(false)}>
+                Go to Dashboard
+              </Link>
+            ) : (
+              <>
+                <Link to="/login" className="mobile-menu-link" onClick={() => setMenuOpen(false)}>
+                  Sign In
+                </Link>
+                <Link to="/register" className="mobile-menu-cta" onClick={() => setMenuOpen(false)}>
+                  Get Started Free
+                </Link>
+              </>
+            )}
+          </div>
+        )}
       </nav>
 
       {/* Hero Section */}
@@ -50,7 +118,7 @@ function LandingPage() {
             improvement suggestions, and recruiter-style feedback — instantly.
           </p>
           <div className="hero-cta-group">
-            <Link to="/register" className="hero-cta-primary">
+            <Link to={isAuthenticated ? "/dashboard" : "/register"} className="hero-cta-primary">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="18"
@@ -366,6 +434,42 @@ function LandingPage() {
         </div>
       </section>
 
+      {/* FAQ Section */}
+      <section className="faq-section" id="faq">
+        <p className="faq-label">FAQ</p>
+        <h2 className="faq-title">Frequently Asked Questions</h2>
+        <p className="faq-subtitle">
+          Everything you need to know about ResumeLens.
+        </p>
+
+        <div className="faq-grid">
+          <div className="faq-card">
+            <h3 className="faq-question">Is ResumeLens really free?</h3>
+            <p className="faq-answer">
+              Yes, 100% free. You can upload and analyze as many resumes as you like without entering a credit card.
+            </p>
+          </div>
+          <div className="faq-card">
+            <h3 className="faq-question">Is my resume data safe?</h3>
+            <p className="faq-answer">
+              Absolutely. We value your privacy. Your files are encrypted during transit, processed securely, and never shared or sold.
+            </p>
+          </div>
+          <div className="faq-card">
+            <h3 className="faq-question">How does the AI analysis work?</h3>
+            <p className="faq-answer">
+              Our system parses your resume text, checks it against standard ATS formatting rules, and uses advanced AI to compare it with modern job descriptions.
+            </p>
+          </div>
+          <div className="faq-card">
+            <h3 className="faq-question">Do I need an account to try it?</h3>
+            <p className="faq-answer">
+              No account is required to run a quick test. However, creating a free account lets you save reports and track improvements.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="cta-section">
         <div className="cta-card">
@@ -391,7 +495,7 @@ function LandingPage() {
           <p className="cta-subtitle">
             One upload. One report. Everything you need to pass the ATS and land the interview.
           </p>
-          <Link to="/register" className="cta-btn">
+          <Link to={isAuthenticated ? "/dashboard" : "/register"} className="cta-btn">
             Start Free Analysis &rarr;
           </Link>
           <p className="cta-note">

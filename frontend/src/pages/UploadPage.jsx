@@ -16,7 +16,7 @@ import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { uploadResume } from '../api/resumeAPI';
 import { analyzeResume } from '../api/analysisAPI';
-import Navbar from '../components/Navbar';
+import DashboardLayout from '../components/DashboardLayout';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 const STEPS = [
@@ -98,15 +98,11 @@ function UploadPage() {
   const isSubmitting = step >= 1 && step <= 2;
 
   return (
-    <div className="page-wrapper">
-      <Navbar />
-
-      <div className="container" style={{ maxWidth: 680 }}>
-        {/* Header */}
-        <div className="dashboard-header">
-          <h1 className="page-title">Upload Resume</h1>
-          <p className="page-subtitle">Get detailed feedback on your resume matching and structure.</p>
-        </div>
+    <DashboardLayout
+      title="Upload Resume"
+      subtitle="Get detailed feedback on your resume matching and structure."
+    >
+      <div style={{ maxWidth: 680, margin: '0 auto', padding: '24px 0' }}>
 
         {/* Progress Steps */}
         <div className="progress-steps" style={{ marginBottom: 40 }}>
@@ -196,32 +192,45 @@ function UploadPage() {
             </div>
 
             {/* Target Role */}
-            <div className="form-group">
-              <label className="form-label" htmlFor="target-role">Target Job Role</label>
-              <input
-                id="target-role"
-                type="text"
-                className="form-input"
-                placeholder="e.g. Python Developer, Data Analyst, Product Manager"
-                value={targetRole}
-                onChange={(e) => setTargetRole(e.target.value)}
-                required
-              />
+            <div className="form-group" style={{ marginTop: 28 }}>
+              <label className="form-label" htmlFor="target-role" style={{ fontSize: '0.78rem', letterSpacing: '0.05em' }}>TARGET JOB ROLE</label>
+              <div className="db-input-with-icon">
+                <span className="db-input-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
+                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                  </svg>
+                </span>
+                <input
+                  id="target-role"
+                  type="text"
+                  className="form-input db-icon-input"
+                  placeholder="e.g. Python Developer, Data Analyst, Product Manager"
+                  value={targetRole}
+                  onChange={(e) => setTargetRole(e.target.value)}
+                  required
+                />
+              </div>
             </div>
 
             <button
               id="analyze-btn"
               type="submit"
-              className="btn btn-primary btn-full btn-lg"
+              className="db-btn-analyze"
               disabled={isSubmitting}
-              style={{ marginTop: 8 }}
             >
-              🚀 Analyze My Resume
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M4.5 16.5c-1.5 1.26-2 2.7-2 3.5.8 0 2.22-.5 3.5-2z" />
+                <path d="M12 2C6.5 2 2 6.5 2 12c0 2.2.7 4.3 2 6l14-14c-1.7-1.3-3.8-2-6-2z" />
+                <path d="M9 15l-1 3" />
+                <path d="M15 9l-3 1" />
+              </svg>
+              <span>Analyze My Resume</span>
             </button>
           </form>
         )}
       </div>
-    </div>
+    </DashboardLayout>
   );
 }
 

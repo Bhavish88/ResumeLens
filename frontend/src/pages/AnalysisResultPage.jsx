@@ -12,7 +12,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getReportByResume } from '../api/analysisAPI';
-import Navbar from '../components/Navbar';
+import DashboardLayout from '../components/DashboardLayout';
 import ScoreGauge from '../components/ScoreGauge';
 import SkillBadge from '../components/SkillBadge';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -131,8 +131,11 @@ function AnalysisResultPage() {
   };
 
   return (
-    <div className="page-wrapper">
-      <Navbar />
+    <DashboardLayout
+      title="Analysis Report"
+      subtitle={report ? `${report.target_role} • ${report.file_name}` : 'Detailed Evaluation Summary'}
+    >
+      <div>
 
       {/* PDF loading state overlay */}
       {isGeneratingPDF && (
@@ -528,7 +531,8 @@ function AnalysisResultPage() {
           </>
         )}
       </div>
-    </div>
+      </div>
+    </DashboardLayout>
   );
 }
 

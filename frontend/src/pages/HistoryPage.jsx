@@ -12,7 +12,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getHistory, deleteReport } from '../api/analysisAPI';
-import Navbar from '../components/Navbar';
+import DashboardLayout from '../components/DashboardLayout';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 function ScorePill({ score }) {
@@ -65,17 +65,11 @@ function HistoryPage() {
     });
 
   return (
-    <div className="page-wrapper">
-      <Navbar />
-
-      <div className="container">
-        {/* Header */}
-        <div className="dashboard-header">
-          <h1 className="page-title">Analysis History</h1>
-          <p className="page-subtitle">
-            All {reports.length > 0 ? reports.length : ''} resume analyses, newest first.
-          </p>
-        </div>
+    <DashboardLayout
+      title="Analysis History"
+      subtitle={`All ${reports.length > 0 ? reports.length : ''} resume analyses, newest first.`}
+    >
+      <div>
 
         {loading && (
           <div className="loading-state">
@@ -145,7 +139,7 @@ function HistoryPage() {
           </div>
         )}
       </div>
-    </div>
+    </DashboardLayout>
   );
 }
 
