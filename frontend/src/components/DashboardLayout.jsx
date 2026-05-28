@@ -1,13 +1,50 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { updateProfile } from '../api/authAPI';
 
 function DashboardLayout({ children, title, subtitle }) {
-  const { user, logout } = useAuth();
+  const { user, logout, updateUser, theme, toggleTheme } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+  const [profileModalOpen, setProfileModalOpen] = useState(false);
+
+  const [editName, setEditName] = useState(user?.name || '');
+  const [editEmail, setEditEmail] = useState(user?.email || '');
+  const [editError, setEditError] = useState('');
+  const [editSuccess, setEditSuccess] = useState('');
+  const [updating, setUpdating] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      setEditName(user.name);
+      setEditEmail(user.email);
+    }
+  }, [user, profileModalOpen]);
+
+  const handleProfileUpdate = async (e) => {
+    e.preventDefault();
+    setEditError('');
+    setEditSuccess('');
+    setUpdating(true);
+
+    try {
+      const response = await updateProfile({ name: editName, email: editEmail });
+      updateUser(response.data.user);
+      setEditSuccess('Profile updated successfully!');
+      setTimeout(() => {
+        setProfileModalOpen(false);
+        setEditSuccess('');
+      }, 1500);
+    } catch (err) {
+      const errMsg = err.response?.data?.message || err.response?.data?.errors?.email?.[0] || 'Failed to update profile. Please try again.';
+      setEditError(errMsg);
+    } finally {
+      setUpdating(false);
+    }
+  };
 
   const initial = user?.name ? user.name.charAt(0).toUpperCase() : 'U';
 
@@ -101,17 +138,6 @@ function DashboardLayout({ children, title, subtitle }) {
         </nav>
 
         <div className="db-sidebar-footer">
-          {/* Settings */}
-          <Link to="#" className="db-sidebar-link" onClick={() => setSidebarOpen(false)}>
-            <span className="db-link-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="3" />
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
-              </svg>
-            </span>
-            <span className="db-link-label">Settings</span>
-          </Link>
-
           {/* Logout */}
           <button className="db-sidebar-link db-logout-btn-nav" onClick={() => { setSidebarOpen(false); logout(); }}>
             <span className="db-link-icon">
@@ -123,20 +149,6 @@ function DashboardLayout({ children, title, subtitle }) {
             </span>
             <span className="db-link-label">Logout</span>
           </button>
-
-          {/* User Card */}
-          <div className="db-sidebar-user-card" onClick={() => setUserDropdownOpen(!userDropdownOpen)}>
-            <div className="db-sidebar-avatar">{initial}</div>
-            <div className="db-sidebar-user-info">
-              <span className="db-user-name">{user?.name || 'User'}</span>
-              <span className="db-user-plan">Free Plan</span>
-            </div>
-            <span className={`db-card-arrow ${userDropdownOpen ? 'open' : ''}`}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="6 9 12 15 18 9" />
-              </svg>
-            </span>
-          </div>
         </div>
       </aside>
 
@@ -174,27 +186,87 @@ function DashboardLayout({ children, title, subtitle }) {
 
           <div className="db-header-right">
             {/* Sun/Moon Toggle */}
-            <button className="db-header-btn" title="Toggle Theme">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="5" />
-                <line x1="12" y1="1" x2="12" y2="3" />
-                <line x1="12" y1="21" x2="12" y2="23" />
-                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-                <line x1="1" y1="12" x2="3" y2="12" />
-                <line x1="21" y1="12" x2="23" y2="12" />
-                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-              </svg>
+            <button className="db-header-btn" onClick={toggleTheme} title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}>
+              {theme === 'dark' ? (
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="5" />
+                  <line x1="12" y1="1" x2="12" y2="3" />
+                  <line x1="12" y1="21" x2="12" y2="23" />
+                  <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                  <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                  <line x1="1" y1="12" x2="3" y2="12" />
+                  <line x1="21" y1="12" x2="23" y2="12" />
+                  <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                  <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                </svg>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                </svg>
+              )}
             </button>
 
-            {/* Profile Pill */}
-            <div className="db-header-profile-pill">
-              <div className="db-header-profile-avatar">{initial}</div>
-              <span className="db-header-profile-name">{user?.name?.split(' ')[0] || 'User'}</span>
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="db-profile-arrow">
-                <polyline points="6 9 12 15 18 9" />
-              </svg>
+            {/* Profile Dropdown Container */}
+            <div className="db-profile-container">
+              <div 
+                className="db-header-profile-pill" 
+                onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+              >
+                <div className="db-header-profile-avatar">{initial}</div>
+                <span className="db-header-profile-name">{user?.name?.split(' ')[0] || 'User'}</span>
+                <svg 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  width="14" 
+                  height="14" 
+                  viewBox="0 0 24 24" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  strokeWidth="2.5" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  className={`db-profile-arrow ${userDropdownOpen ? 'open' : ''}`}
+                >
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </div>
+
+              {/* Profile Dropdown List */}
+              {userDropdownOpen && (
+                <div className="db-profile-dropdown">
+                  <div className="db-profile-dropdown-header">
+                    <span className="db-dropdown-name">{user?.name}</span>
+                    <span className="db-dropdown-email">{user?.email}</span>
+                  </div>
+                  <div className="db-profile-dropdown-divider" />
+                  <button 
+                    className="db-dropdown-item" 
+                    onClick={() => { 
+                      setUserDropdownOpen(false); 
+                      setProfileModalOpen(true); 
+                    }}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                      <circle cx="12" cy="7" r="4" />
+                    </svg>
+                    <span>Edit Profile</span>
+                  </button>
+                  <button 
+                    className="db-dropdown-item db-dropdown-item--logout" 
+                    onClick={() => { 
+                      setUserDropdownOpen(false); 
+                      logout(); 
+                    }}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1-2-2h4" />
+                      <polyline points="16 17 21 12 16 7" />
+                      <line x1="21" y1="12" x2="9" y2="12" />
+                    </svg>
+                    <span>Logout</span>
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -210,6 +282,71 @@ function DashboardLayout({ children, title, subtitle }) {
           {children}
         </div>
       </main>
+      {/* Profile Edit Modal */}
+      {profileModalOpen && (
+        <div className="profile-modal-overlay" onClick={() => setProfileModalOpen(false)}>
+          <div className="profile-modal-card" onClick={(e) => e.stopPropagation()}>
+            <div className="profile-modal-header">
+              <h2 className="profile-modal-title">Edit Profile</h2>
+              <button className="profile-modal-close" onClick={() => setProfileModalOpen(false)}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+            </div>
+
+            <form onSubmit={handleProfileUpdate} className="profile-modal-form">
+              {editError && <div className="auth-alert auth-alert-error">{editError}</div>}
+              {editSuccess && <div className="auth-alert auth-alert-success">{editSuccess}</div>}
+
+              <div className="profile-form-group">
+                <label className="profile-form-label">Full Name</label>
+                <input
+                  type="text"
+                  className="profile-form-input"
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  placeholder="Enter your name"
+                  required
+                  disabled={updating}
+                />
+              </div>
+
+              <div className="profile-form-group">
+                <label className="profile-form-label">Email Address</label>
+                <input
+                  type="email"
+                  className="profile-form-input"
+                  value={editEmail}
+                  onChange={(e) => setEditEmail(e.target.value)}
+                  placeholder="Enter your email"
+                  required
+                  disabled={updating}
+                />
+              </div>
+
+              <div className="profile-modal-actions">
+                <button
+                  type="button"
+                  className="profile-btn-cancel"
+                  onClick={() => setProfileModalOpen(false)}
+                  disabled={updating}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="profile-btn-save"
+                  disabled={updating}
+                >
+                  {updating ? 'Saving...' : 'Save Changes'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

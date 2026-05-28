@@ -26,8 +26,24 @@ const AuthContext = createContext(null);
 // Provider component — wraps the whole app in App.jsx
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true); // true while checking session
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem('theme') || 'dark';
+  });
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => {
+      const nextTheme = prev === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('theme', nextTheme);
+      return nextTheme;
+    });
+  };
 
   // On mount: check if there's a saved session
   useEffect(() => {
@@ -90,6 +106,9 @@ export function AuthProvider({ children }) {
     loading,
     login,
     logout,
+    updateUser: (userData) => setUser(userData),
+    theme,
+    toggleTheme,
   };
 
   return (
