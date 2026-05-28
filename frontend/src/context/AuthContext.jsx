@@ -29,22 +29,6 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  const [theme, setTheme] = useState(() => {
-    return localStorage.getItem('theme') || 'dark';
-  });
-
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-  }, [theme]);
-
-  const toggleTheme = () => {
-    setTheme((prev) => {
-      const nextTheme = prev === 'dark' ? 'light' : 'dark';
-      localStorage.setItem('theme', nextTheme);
-      return nextTheme;
-    });
-  };
-
   // On mount: check if there's a saved session
   useEffect(() => {
     const checkSession = async () => {
@@ -107,8 +91,6 @@ export function AuthProvider({ children }) {
     login,
     logout,
     updateUser: (userData) => setUser(userData),
-    theme,
-    toggleTheme,
   };
 
   return (
